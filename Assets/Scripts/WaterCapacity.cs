@@ -14,23 +14,41 @@ public class WaterCapacity : MonoBehaviour
     }
     private void Update()
     {
-        LoseWater();
+        LosePlayerWater();
     }
     public float GetCurrentWater
     {
         get { return currentWater; }
     }
 
-
-
-    public void LoseWater()
+    public void LosePlayerWater()
     {
         currentWater -= leak * Time.deltaTime;
-        Debug.Log("CurrentWater: " +  currentWater);
+        if (currentWater <= 0)
+        {
+            return;
+        }
+        //Debug.Log("CurrentWater: " +  currentWater);
     }
     
-    public void GainWater()
+    public void PlayerGainWater()
     {
         currentWater += fill * Time.deltaTime;
+        //Debug.Log("CurrentWater: " + currentWater);
+    }
+
+    public void OnTriggerStay2D(Collider2D other)
+    {
+        // Check if we hit an enemy
+        if (other.CompareTag("Enemy"))
+        {
+            EnemyWater enemyWater = other.GetComponent<EnemyWater>();
+            if (enemyWater != null)
+            {
+                    enemyWater.LoseEnemyWater();
+
+                    PlayerGainWater();
+            }
+        }
     }
 }
