@@ -7,16 +7,18 @@ public class FieldOfView : MonoBehaviour
     // Go back to Code Monkey Field of View Effect in Unity around 13:00
 
     private Mesh mesh;
+    private float fov = 90f;
+    private Vector3 origin;
+    private float startingAngle;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        origin = Vector3.zero;
     }
 
     private void Update() { 
-        float fov = 90f;
-        Vector3 origin = Vector3.zero;
         int rayCount = 50;
         float angle = 0f;
         float angleIncrease = fov / rayCount;
@@ -71,5 +73,22 @@ public class FieldOfView : MonoBehaviour
         return new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad));
     }
 
-    
+    public static float GetAngleFromVectorFloat(Vector3 dir)
+    {
+        dir = dir.normalized;
+        float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        if (n < 0) n += 360;
+
+        return n;
+    }
+
+    public void SetOrigin(Vector3 origin)
+    {
+        this.origin = origin;
+    }
+
+    public void SetAimDirection(Vector3 aimDirection)
+    {
+        startingAngle = GetAngleFromVectorFloat(aimDirection) - fov / 2f;
+    }
 }
